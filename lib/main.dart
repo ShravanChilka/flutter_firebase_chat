@@ -9,14 +9,14 @@ import 'package:video_player/video_player.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(
-      MaterialApp(
-    debugShowCheckedModeBanner: false,
-    theme: ThemeData(
-      brightness:Brightness.dark,
-      fontFamily: GoogleFonts.poppins().fontFamily
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+          brightness: Brightness.dark,
+          fontFamily: GoogleFonts.poppins().fontFamily),
+      home: const ChatScreen(),
     ),
-    home: const ChatScreen(),
-  ));
+  );
 }
 
 class ImagePickerLearn extends StatefulWidget {
@@ -40,7 +40,8 @@ class _ImagePickerLearnState extends State<ImagePickerLearn> {
         video = pickedVideo;
         if (video != null) {
           _controller = VideoPlayerController.file(File(video!.path))
-            ..initialize()..setLooping(true).then((value) => _controller.play());
+            ..initialize()
+            ..setLooping(true).then((value) => _controller.play());
           setState(() {});
           debugPrint("video : ${video!.path.toString()}");
         }

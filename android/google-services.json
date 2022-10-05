@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "282473491739",
+    "project_id": "flutterfirechat-16c2d",
+    "storage_bucket": "flutterfirechat-16c2d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:282473491739:android:25979a6151729e42c877be",
+        "android_client_info": {
+          "package_name": "com.example.flutter_mapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "282473491739-l0dc2dnmfj3mppobmvmisrvu5jvm68sd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQWqSymuDmzHJMPeCFPi7j2_jAV6rRWpQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "282473491739-l0dc2dnmfj3mppobmvmisrvu5jvm68sd.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "282473491739-l54982j9leroggjn3b7knef5o068lv93.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.fireChat.flutterMapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

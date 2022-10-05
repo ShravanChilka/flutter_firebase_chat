@@ -56,12 +56,15 @@ class _ChatScreenState extends State<ChatScreen> {
                 height: 50,
               ),
               const Expanded(
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: "Send Message",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: "Send Message",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
                       ),
                     ),
                   ),
@@ -80,24 +83,6 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ],
           )
-          // SizedBox(
-          //   width: size.width,
-          //   height: 50,
-          //   child: Row(
-          //     children: const [
-          //       TextField(
-          //         decoration: InputDecoration(
-          //           hintText: "Send Message",
-          //           border: OutlineInputBorder(
-          //             borderRadius: BorderRadius.all(
-          //               Radius.circular(10),
-          //             ),
-          //           ),
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
         ],
       ),
     );
