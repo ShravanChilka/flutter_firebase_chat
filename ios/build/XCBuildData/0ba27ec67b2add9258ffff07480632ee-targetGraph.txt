@@ -1,0 +1,18 @@
+Target dependency graph (6 targets)
+Flutter in Pods, no dependencies
+image_picker_ios in Pods, depends on:
+Flutter in Pods (explicit)
+path_provider_ios in Pods, depends on:
+Flutter in Pods (explicit)
+video_player_avfoundation in Pods, depends on:
+Flutter in Pods (explicit)
+Pods-Runner in Pods, depends on:
+Flutter in Pods (explicit)
+image_picker_ios in Pods (explicit)
+path_provider_ios in Pods (explicit)
+video_player_avfoundation in Pods (explicit)
+Runner in Runner, depends on:
+Pods-Runner in Pods (implicit dependency via file 'Pods_Runner.framework' in build phase 'Link Binary')
+image_picker_ios in Pods (implicit dependency via options '-framework image_picker_ios' in build setting 'OTHER_LDFLAGS')
+path_provider_ios in Pods (implicit dependency via options '-framework path_provider_ios' in build setting 'OTHER_LDFLAGS')
+video_player_avfoundation in Pods (implicit dependency via options '-framework video_player_avfoundation' in build setting 'OTHER_LDFLAGS')
