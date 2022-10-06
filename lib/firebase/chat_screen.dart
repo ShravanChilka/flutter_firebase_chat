@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mapp/firebase/auth/auth.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
@@ -8,6 +10,49 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  FirebaseFirestore db = FirebaseFirestore.instance;
+  TextEditingController messageController = TextEditingController();
+  List<MessageData> list = [];
+
+  Future<void> getMessages() async {
+    CollectionReference _collectionRef =
+        FirebaseFirestore.instance.collection('messages');
+    QuerySnapshot querySnapshot = await _collectionRef.get();
+    final allData = querySnapshot.docs
+        .map((doc) => MessageData.fromMap(doc.data() as Map<String, dynamic>))
+        .toList();
+    setState(() {
+      list = allData;
+    });
+
+    await db
+        .collection("messages")
+        .get()
+        .then(
+          (value) => (doc) {
+            setState(() {
+              list.add(MessageData(
+                  uid: '${doc["uid"]}', message: "${doc["message"]}"));
+            });
+          },
+        )
+        .then((value) => printMessages());
+  }
+
+  printMessages() {
+    for (int i = 0; i < list.length; i++) {
+      debugPrint(list[i].message.toString());
+    }
+  }
+
+  Future<void> sendClicked() async {
+    await db.collection("messages").add({
+      "uid": Auth().currentUser!.uid.toString(),
+      "message": messageController.text.toString(),
+    });
+    messageController.text = "";
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -26,66 +71,98 @@ class _ChatScreenState extends State<ChatScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () {},
+            onPressed: () => signOutClicked(),
           )
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-              itemBuilder: (context, index) {
-                if (messages[index][0]) {
-                  return sentLayout(messages[index][1]);
-                } else {
-                  return receivedLayout(messages[index][1]);
-                }
-              },
-              itemCount: messages.length,
-            ),
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Image.asset(
-                "images/fire.png",
-                width: 50,
-                height: 50,
-              ),
-              const Expanded(
-                child: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: "Send Message",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
+      body: StreamBuilder<QuerySnapshot>(
+          stream: db.collection("messages").snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              final allData = snapshot.data?.docs
+                  .map((doc) =>
+                      MessageData.fromMap(doc.data() as Map<String, dynamic>))
+                  .toList();
+              list = allData!;
+            }
+            return Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    reverse: true,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    itemBuilder: (context, index) {
+                      if (list[index].uid ==
+                          Auth().currentUser!.uid.toString()) {
+                        return sentLayout(list[index].message);
+                      } else {
+                        return receivedLayout(list[index].message);
+                      }
+                    },
+                    itemCount: list.length,
+                  ),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () => getMessages(),
+                      child: Image.asset(
+                        "images/fire.png",
+                        width: 50,
+                        height: 50,
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          controller: messageController,
+                          decoration: const InputDecoration(
+                            hintText: "Send Message",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CircleAvatar(
-                  backgroundColor: Colors.deepOrangeAccent,
-                  child: IconButton(
-                    icon: const Icon(Icons.send),
-                    color: Colors.black,
-                    onPressed: () {},
-                  ),
-                ),
-              ),
-            ],
-          )
-        ],
-      ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CircleAvatar(
+                        backgroundColor: Colors.deepOrangeAccent,
+                        child: IconButton(
+                          icon: const Icon(Icons.send),
+                          color: Colors.black,
+                          onPressed: () => sendClicked(),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            );
+          }),
     );
+  }
+
+  Future<void> signOutClicked() async {
+    await Auth().signOut();
+  }
+}
+
+class MessageData {
+  String uid;
+  String message;
+
+  MessageData({required this.uid, required this.message});
+
+  static MessageData fromMap(Map<String, dynamic> map) {
+    return MessageData(uid: map["uid"], message: map["message"]);
   }
 }
 

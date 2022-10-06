@@ -1,20 +1,30 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mapp/firebase/chat_screen.dart';
-import 'package:flutter_mapp/firebase/sign_up_screen.dart';
+import 'package:flutter_mapp/firebase/nav_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(
-    MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-          brightness: Brightness.dark,
-          fontFamily: GoogleFonts.poppins().fontFamily),
-      home: const ChatScreen(),
+    MultiProvider(
+      providers: [
+        StreamProvider(
+            create: (context) => FirebaseAuth.instance.authStateChanges(),
+            initialData: null)
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+            brightness: Brightness.dark,
+            fontFamily: GoogleFonts.poppins().fontFamily),
+        home: const NavScreen(),
+      ),
     ),
   );
 }
