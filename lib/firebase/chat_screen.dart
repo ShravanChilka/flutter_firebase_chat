@@ -14,30 +14,30 @@ class _ChatScreenState extends State<ChatScreen> {
   TextEditingController messageController = TextEditingController();
   List<MessageData> list = [];
 
-  Future<void> getMessages() async {
-    CollectionReference _collectionRef =
-        FirebaseFirestore.instance.collection('messages');
-    QuerySnapshot querySnapshot = await _collectionRef.get();
-    final allData = querySnapshot.docs
-        .map((doc) => MessageData.fromMap(doc.data() as Map<String, dynamic>))
-        .toList();
-    setState(() {
-      list = allData;
-    });
-
-    await db
-        .collection("messages")
-        .get()
-        .then(
-          (value) => (doc) {
-            setState(() {
-              list.add(MessageData(
-                  uid: '${doc["uid"]}', message: "${doc["message"]}"));
-            });
-          },
-        )
-        .then((value) => printMessages());
-  }
+  // Future<void> getMessages() async {
+  //   CollectionReference collectionRef =
+  //       FirebaseFirestore.instance.collection('messages');
+  //   QuerySnapshot querySnapshot = await collectionRef.get();
+  //   final allData = querySnapshot.docs
+  //       .map((doc) => MessageData.fromMap(doc.data() as Map<String, dynamic>))
+  //       .toList();
+  //   setState(() {
+  //     list = allData;
+  //   });
+  //
+  //   await db
+  //       .collection("messages")
+  //       .get()
+  //       .then(
+  //         (value) => (doc) {
+  //           setState(() {
+  //             list.add(MessageData(
+  //                 uid: '${doc["uid"]}', message: "${doc["message"]}"));
+  //           });
+  //         },
+  //       )
+  //       .then((value) => printMessages());
+  // }
 
   printMessages() {
     for (int i = 0; i < list.length; i++) {
@@ -45,10 +45,10 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  Future<void> sendClicked() async {
+  Future<void> sendClicked(String message) async {
     await db.collection("messages").add({
       "uid": Auth().currentUser!.uid.toString(),
-      "message": messageController.text.toString(),
+      "message": message,
     });
     messageController.text = "";
   }
@@ -56,14 +56,6 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-
-    List messages = [
-      [true, "Heyy"],
-      [false, "Heyy there!"],
-      [false, "How was your day"],
-      [true, "Great, wbu"],
-      [true, "Lets meet"],
-    ];
 
     return Scaffold(
       appBar: AppBar(
@@ -108,7 +100,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     GestureDetector(
-                      onTap: () => getMessages(),
+                      onTap: () => sendClicked("fire"),
                       child: Image.asset(
                         "images/fire.png",
                         width: 50,
@@ -138,7 +130,8 @@ class _ChatScreenState extends State<ChatScreen> {
                         child: IconButton(
                           icon: const Icon(Icons.send),
                           color: Colors.black,
-                          onPressed: () => sendClicked(),
+                          onPressed: () =>
+                              sendClicked(messageController.text.toString()),
                         ),
                       ),
                     ),
@@ -180,7 +173,9 @@ Widget sentLayout(String message) {
           color: Colors.deepOrangeAccent),
       margin: const EdgeInsets.all(8),
       padding: const EdgeInsets.only(top: 10, bottom: 10, left: 13, right: 13),
-      child: Text(message),
+      child: message == "fire"
+          ? Image.asset("images/fire.png", width: 100, height: 100)
+          : Text(message),
     ),
   );
 }
@@ -199,10 +194,9 @@ Widget receivedLayout(String message) {
           color: Colors.white),
       margin: const EdgeInsets.all(8),
       padding: const EdgeInsets.only(top: 10, bottom: 10, left: 13, right: 13),
-      child: Text(
-        message,
-        style: const TextStyle(color: Colors.black),
-      ),
+      child: message == "fire"
+          ? Image.asset("images/fire.png", width: 100, height: 100)
+          : Text(message, style: const TextStyle(color: Colors.black)),
     ),
   );
 }
